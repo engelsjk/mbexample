@@ -8,13 +8,22 @@ export MAPBOX_ACCESS_TOKEN='***ACCESSTOKEN***'
 mbexample map
 ```
 
-The example map you specified will be viewable at localhost:3000.
+# Why?
 
-A few optional flags can be used to specify one of the standard Mapbox styles, save an html file locally or set your Mapbox Access Token inline.
+Find yourself frequently copying [Mapbox examples](https://docs.mapbox.com/mapbox-gl-js/examples/) to start new map ideas? Then why not use a convenient if not unnecessary CLI to spin up local copies of any Mapbox GL JS example!
+
+# How?
+
+A few optional flags can be used to save an html copy locally, set a Mapbox access token or to specify a standard Mapbox styles.
 
 ```
-mbexample [EXAMPLE] --style=satellite --save --token=***ACCESSTOKEN***
+mbexample [EXAMPLE] --save --token=***ACCESSTOKEN*** --style=[streets, light, dark, outdoors, satellite or satellite-streets]
 ```
+
+The example map you specified should then be viewable at localhost:3000.
+
+
+# Examples
 
 Here's a full list of examples you can choose from, copied directly from the official list of [Mapbox GL JS Examples](https://docs.mapbox.com/mapbox-gl-js/examples/).
 
