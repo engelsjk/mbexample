@@ -1,6 +1,6 @@
 # mbexample
 
-Quick and easy Mapbox GL JS maps example templates.
+Quick and easy Mapbox GL JS map templates.
 
 ```bash
 go get -u github.com/engelsjk/mbexample
