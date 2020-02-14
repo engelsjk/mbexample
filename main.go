@@ -140,8 +140,8 @@ var CLI struct {
 
 func main() {
 	ctx := kong.Parse(&CLI,
-		kong.Name("mbex"),
-		kong.Description("Easy templating of Mapbox GL JS examples."),
+		kong.Name("mbexample"),
+		kong.Description("Quick and easy Mapbox GL JS maps example templates."),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
