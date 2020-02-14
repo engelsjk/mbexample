@@ -1,6 +1,6 @@
 # mbexample
 
-Quick and easy Mapbox GL JS maps based on example templates.
+Quick and easy Mapbox GL JS maps example templates.
 
 ```bash
 go get -u github.com/fogleman/primitive
