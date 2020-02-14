@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Use a fallback image</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+	mapboxgl.accessToken = '{{.AccessToken}}';
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/{{.Style}}',
+center: [-77, 38.75],
+zoom: 5
+});
+map.on('load', function() {
+map.addSource('points', {
+'type': 'geojson',
+'data': {
+'type': 'FeatureCollection',
+'features': [
+{
+'type': 'Feature',
+'geometry': {
+'type': 'Point',
+'coordinates': [
+-77.03238901390978,
+38.913188059745586
+]
+},
+'properties': {
+'title': 'Washington DC',
+'icon': 'monument'
+}
+},
+{
+'type': 'Feature',
+'geometry': {
+'type': 'Point',
+'coordinates': [-79.9959, 40.4406]
+},
+'properties': {
+'title': 'Pittsburgh',
+'icon': 'bridges'
+}
+},
+{
+'type': 'Feature',
+'geometry': {
+'type': 'Point',
+'coordinates': [-76.2859, 36.8508]
+},
+'properties': {
+'title': 'Norfolk',
+'icon': 'harbor'
+}
+}
+]
+}
+});
+map.addLayer({
+'id': 'points',
+'type': 'symbol',
+'source': 'points',
+'layout': {
+'icon-image': [
+'coalesce',
+['image', ['concat', ['get', 'icon'], '-15']],
+['image', 'marker-15']
+],
+'text-field': ['get', 'title'],
+'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+'text-offset': [0, 0.6],
+'text-anchor': 'top'
+}
+});
+});
+</script>
+ 
+</body>
+</html>
