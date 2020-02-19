@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -150,6 +151,15 @@ func main() {
 	GetExample(ctx.Command())
 }
 
+var (
+	ErrTemplateNotFound         = errors.New("Template not found!")
+	ErrAccessTokenRequired      = errors.New("Mapbox access token required (use either a MAPBOX_ACCESS_TOKEN env variable or the --token flag)")
+	ErrMapNotRendering          = errors.New("Error rendering map from template!")
+	ErrWorkingDirectoryNotFound = errors.New("Unable to find working directory!")
+	ErrCreateFile               = errors.New("There was an error creating a new file!")
+	ErrParsingTemplate          = errors.New("Unable to parse that map template!")
+)
+
 func GetExample(example string) {
 	m, err := NewMap(example, CLI.Style)
 	if err != nil {
@@ -168,8 +178,8 @@ func GetExample(example string) {
 	port := 3000
 	fmt.Printf("example %s at localhost:%d...\n", m.Name, port)
 	err = http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
-	errPortInUse := fmt.Sprintf("listen tcp :%d: bind: address already in use", port)
-	if err.Error() == errPortInUse {
+	ErrPortInUse := fmt.Sprintf("listen tcp :%d: bind: address already in use", port)
+	if err.Error() == ErrPortInUse {
 		fmt.Printf("error: nevermind, port %d seems to be in use already\n", port)
 		return
 	}
@@ -183,7 +193,7 @@ func NewMap(example string, style string) (*Map, error) {
 	templateFilename := example + ".gohtml"
 	t, err := vfstemplate.ParseFiles(assets, nil, templateFilename)
 	if err != nil {
-		return nil, fmt.Errorf("unable to find a template for the %s map", example)
+		return nil, ErrTemplateNotFound
 	}
 	return &Map{
 		Name:             example,
@@ -205,17 +215,17 @@ type Map struct {
 func (m *Map) Save() error {
 	path, err := os.Getwd()
 	if err != nil {
-		return err
+		return ErrWorkingDirectoryNotFound
 	}
 	f, err := os.Create(filepath.Join(path, m.Name+".html"))
 	if err != nil {
-		return err
+		return ErrCreateFile
 	}
 	defer f.Close()
 
 	err = m.Template.Execute(f, m)
 	if err != nil {
-		return (err)
+		return ErrParsingTemplate
 	}
 	return nil
 }
@@ -226,7 +236,7 @@ func (m *Map) Render(w http.ResponseWriter) error {
 
 func (m *Map) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := m.Render(w); err != nil {
-		panic(err)
+		http.Error(w, ErrMapNotRendering.Error(), http.StatusInternalServerError)
 	}
 }
 
@@ -236,7 +246,7 @@ func getAccessToken() (string, error) {
 		token = os.Getenv("MAPBOX_ACCESS_TOKEN")
 	}
 	if token == "" {
-		return "", fmt.Errorf("mapbox access token required (use either a MAPBOX_ACCESS_TOKEN env variable or the --token flag)")
+		return "", ErrAccessTokenRequired
 	}
 	return token, nil
 }
